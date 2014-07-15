@@ -1,10 +1,10 @@
 <?php
 /**
- * auth 授权 php版本
+ * Auth 授权 PHP 版本
  * @author  caolong@feinno.com
  * @date    2014-07-15
  * @version 1.0
- * demo使用:
+ * Demo 使用:
 $options = array(
     'appKey'=>'',                   //从融云开发者平台申请的 AppKey
     'appSecret'=>'',                //从融云开发者平台申请的 AppSecret
@@ -24,20 +24,14 @@ class AuthService{
     private $appKey;            //从融云开发者平台申请的 AppKey
     private $appSecret;         //从融云开发者平台申请的 AppSecret
     private $userId;            //用户 Id，最大长度 32 字节，来自开发者自己的应用，必须保证全平台内不重复，重复的用户 Id 将被当作是同一个用户
-    private $deviceId;          //设备id 唯一标示
+    private $deviceId;          //设备 Id 唯一标示
     private $name;              //用户名称，最大长度 128 字节
     private $portraitUri;       //用户头像 URL，最大长度 1024 字节
-    private $url = 'http://auth.cn.rong.io';
+    private $url = 'http://auth.cn.rong.io';    //server请求地址
 
     /**
-     * 初始化
-     * @param $appKey
-     * @param $appSecret
-     * @param $userId
-     * @param $deviceId
-     * @param string $format
-     * @param string $name
-     * @param string $portraitUri
+     * 初始化构造函数
+     * @param array $data
      */
     public function __construct($data = array()){
         $this->setOptions($data);
@@ -98,11 +92,11 @@ class AuthService{
         }
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch,CURLOPT_DNS_USE_GLOBAL_CACHE, FALSE);
+        curl_setopt($ch,CURLOPT_DNS_USE_GLOBAL_CACHE, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $ret = curl_exec($ch);
-       if (false === $ret) {
+        if (false === $ret) {
             $err =  curl_errno($ch);
 		    curl_close($ch);
             $r = array(
