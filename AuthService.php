@@ -151,15 +151,3 @@ class AuthService{
 
 }
 
-$options = array(
-    'appKey'=>'e0x9wycfx7flq',                   //从融云开发者平台申请的 AppKey
-    'appSecret'=>'Hxv5X26zBs',                //从融云开发者平台申请的 AppSecret
-    'userId'=>'1122',                   //用户 Id
-    'deviceId'=>'2233',                 //设备标示
-    'format'=>'json',               //返回格式 仅限于 json 或者 xml
-    'name'=>'',                     //用户名称，最大长度 128 字节
-    'portraitUri'=>''               //用户头像 URL，最大长度 1024 字节
-);
-$p = new AuthService($options);
-$ret = $p->request();
-print_r($ret);
