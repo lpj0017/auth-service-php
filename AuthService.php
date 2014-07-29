@@ -6,13 +6,13 @@
  * @version 1.0
  * Demo 使用:
 $options = array(
-    'appKey'=>'',                   //从融云开发者平台申请的 AppKey
-    'appSecret'=>'',                //从融云开发者平台申请的 AppSecret
-    'userId'=>'',                   //用户 Id
-    'deviceId'=>'',                 //设备标示
-    'format'=>'json',               //返回格式 仅限于 json 或者 xml
-    'name'=>'',                     //用户名称，最大长度 128 字节
-    'portraitUri'=>''               //用户头像 URL，最大长度 1024 字节
+'appKey'=>'',                   //从融云开发者平台申请的 AppKey
+'appSecret'=>'',                //从融云开发者平台申请的 AppSecret
+'userId'=>'',                   //用户 Id
+'deviceId'=>'',                 //设备标示
+'format'=>'json',               //返回格式 仅限于 json 或者 xml
+'name'=>'',                     //用户名称，最大长度 128 字节
+'portraitUri'=>''               //用户头像 URL，最大长度 1024 字节
 );
 $p = new AuthService($options);
 $ret = $p->request();
@@ -24,7 +24,6 @@ class AuthService{
     private $appKey;            //从融云开发者平台申请的 AppKey
     private $appSecret;         //从融云开发者平台申请的 AppSecret
     private $userId;            //用户 Id，最大长度 32 字节，来自开发者自己的应用，必须保证全平台内不重复，重复的用户 Id 将被当作是同一个用户
-    private $deviceId;          //设备 Id 唯一标示
     private $name;              //用户名称，最大长度 128 字节
     private $portraitUri;       //用户头像 URL，最大长度 1024 字节
     private $url = 'http://auth.cn.rong.io';    //server请求地址
@@ -61,7 +60,6 @@ class AuthService{
         $params = array(
             'userId'=>$this->userId,
             'format'=>$this->format,
-            'deviceId'=>$this->deviceId,
             'name'=>$this->name,
             'portraitUri'=>$this->portraitUri,
         );
@@ -98,7 +96,7 @@ class AuthService{
         $ret = curl_exec($ch);
         if (false === $ret) {
             $err =  curl_errno($ch);
-		    curl_close($ch);
+            curl_close($ch);
             $r = array(
                 'code'=>$err,
                 'token'=>0,
@@ -134,7 +132,7 @@ class AuthService{
         $flag && $xml .= "<result>\n";
         foreach ($data as $k=>$v){
             if(is_array($v)){
-                    $xml .= (is_numeric($k)?"<item>":"<{$k}>")."\n".self::arrToXml($v,false,$k,$type).(is_numeric($k)?"</item>":"</{$k}>")."\n";
+                $xml .= (is_numeric($k)?"<item>":"<{$k}>")."\n".self::arrToXml($v,false,$k,$type).(is_numeric($k)?"</item>":"</{$k}>")."\n";
             }else{
                 $xml .= "<{$k}>".(is_numeric($v)?$v:"<![CDATA[{$v}]]>")."</{$k}>\n";
             }
