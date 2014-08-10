@@ -26,7 +26,7 @@ class AuthService{
     private $userId;            //用户 Id，最大长度 32 字节，来自开发者自己的应用，必须保证全平台内不重复，重复的用户 Id 将被当作是同一个用户
     private $name;              //用户名称，最大长度 128 字节
     private $portraitUri;       //用户头像 URL，最大长度 1024 字节
-    private $url = 'http://auth.cn.rong.io';    //server请求地址
+    private $url = 'https://api.cn.rong.io';    //server请求地址
 
     /**
      * 初始化构造函数
@@ -56,7 +56,7 @@ class AuthService{
      * 发送请求
      */
     public function request(){
-        $url = $this->url.'/reg.'.$this->format;
+        $url = $this->url.'/user/getToken.'.$this->format;
         $params = array(
             'userId'=>$this->userId,
             'format'=>$this->format,
@@ -93,7 +93,9 @@ class AuthService{
         curl_setopt($ch,CURLOPT_DNS_USE_GLOBAL_CACHE, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+
         $ret = curl_exec($ch);
+        $httpInfo = curl_getinfo($ch);
         if (false === $ret) {
             $err =  curl_errno($ch);
             curl_close($ch);
@@ -102,11 +104,11 @@ class AuthService{
                 'token'=>0,
                 'userId'=>0,
             );
-            self::formatResponseData($r,$this->format);
-            return false;
+            return self::formatResponseData(['httpInfo'=>$httpInfo,'ret'=>$r],$this->format);
+            // return false;
         }
         curl_close($ch);
-        return $ret;
+        return ['httpInfo'=>$httpInfo,'ret'=>$ret];
     }
 
 
@@ -115,14 +117,10 @@ class AuthService{
      * @param unknown $controller
      */
     public static function formatResponseData($arr,$format= 'json'){
-        switch($format){
-            case 'xml':
-                print_r(self::arrToXml($arr,true));
-                break;
-            case 'json':
-            default:
-                print_r(json_encode($arr));
-                break;
+        if($format == 'json') {
+            return json_encode($arr);
+        }else{
+            return self::arrToXml($arr,true);
         }
     }
 
