@@ -4,12 +4,12 @@
  * @author  caolong@feinno.com
  * @date    2014-07-15
  * @version 1.0
+ * @description 需要 php curl 扩展库的支持
  * Demo 使用:
 $options = array(
 'appKey'=>'',                   //从融云开发者平台申请的 AppKey
 'appSecret'=>'',                //从融云开发者平台申请的 AppSecret
 'userId'=>'',                   //用户 Id
-'deviceId'=>'',                 //设备标示
 'format'=>'json',               //返回格式 仅限于 json 或者 xml
 'name'=>'',                     //用户名称，最大长度 128 字节
 'portraitUri'=>''               //用户头像 URL，最大长度 1024 字节
@@ -89,10 +89,10 @@ class AuthService{
             curl_setopt($ch, CURLOPT_HTTPHEADER, $httpHeader);
         }
         curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'RongCloud_API_Tool');//定义useragent 用于统计数据
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch,CURLOPT_DNS_USE_GLOBAL_CACHE, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
 
         $ret = curl_exec($ch);
         $httpInfo = curl_getinfo($ch);
@@ -104,11 +104,11 @@ class AuthService{
                 'token'=>0,
                 'userId'=>0,
             );
-            return self::formatResponseData(['httpInfo'=>$httpInfo,'ret'=>$r],$this->format);
+            return self::formatResponseData(array('httpInfo'=>$httpInfo,'ret'=>$r),$this->format);
             // return false;
         }
         curl_close($ch);
-        return ['httpInfo'=>$httpInfo,'ret'=>$ret];
+        return array('httpInfo'=>$httpInfo,'ret'=>$ret);
     }
 
 
