@@ -63,10 +63,18 @@ class AuthService{
             'name'=>$this->name,
             'portraitUri'=>$this->portraitUri,
         );
+
+        $nonce = mt_rand();
+        $time = time();
+        $sign = sha1($this->appSecret.$nonce.$time);
         $httpHeader = array(
-            'appKey:'.$this->appKey,
-            'appSecret:'.$this->appSecret
+            'App-Key:'.$this->appKey,
+            'Nonce:'.$nonce,
+            'Timestamp:'.$time,
+            'Signature:'.$sign,
         );
+
+        //print_r($httpHeader);
         return $this->curl($url,$params,$httpHeader);
     }
 
