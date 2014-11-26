@@ -7,14 +7,23 @@
  * @description 需要 php curl 扩展库的支持
  * Demo 使用:
 $options = array(
-'appKey'=>'',                   //从融云开发者平台申请的 AppKey
-'appSecret'=>'',                //从融云开发者平台申请的 AppSecret
-'userId'=>'',                   //用户 Id
+'appKey'=>'8luwapkvu0mil',                   //从融云开发者平台申请的 AppKey
+'userId'=>'1',                   //用户 Id
 'format'=>'json',               //返回格式 仅限于 json 或者 xml
-'name'=>'',                     //用户名称，最大长度 128 字节
-'portraitUri'=>''               //用户头像 URL，最大长度 1024 字节
+'name'=>'2',                     //用户名称，最大长度 128 字节
+'portraitUri'=>'3'               //用户头像 URL，最大长度 1024 字节
 );
-$p = new AuthService($options);
+$nonce = mt_rand();
+$time = time();
+$appSecret = 'NKxf7IBpGFYm';
+$sign = sha1($appSecret.$nonce.$time);
+$httpHeader = array(
+'App-Key:'.$options['appKey'],
+'Nonce:'.$nonce,
+'Timestamp:'.$time,
+'Signature:'.$sign,
+);
+$p = new AuthService($options,$httpHeader);
 $ret = $p->request();
 print_r($ret);
  */
@@ -22,18 +31,19 @@ print_r($ret);
 class AuthService{
     private $format = 'json';   //返回格式，仅限于 json 或者 xml
     private $appKey;            //从融云开发者平台申请的 AppKey
-    private $appSecret;         //从融云开发者平台申请的 AppSecret
     private $userId;            //用户 Id，最大长度 32 字节，来自开发者自己的应用，必须保证全平台内不重复，重复的用户 Id 将被当作是同一个用户
     private $name;              //用户名称，最大长度 128 字节
     private $portraitUri;       //用户头像 URL，最大长度 1024 字节
     private $url = 'https://api.cn.rong.io';    //server请求地址
+    private $httpHeader = [];
 
     /**
      * 初始化构造函数
      * @param array $data
      */
-    public function __construct($data = array()){
+    public function __construct($data = array(),$httpHeader =[]){
         $this->setOptions($data);
+        $this->httpHeader = $httpHeader;
     }
 
     /**
@@ -63,19 +73,7 @@ class AuthService{
             'name'=>$this->name,
             'portraitUri'=>$this->portraitUri,
         );
-
-        $nonce = mt_rand();
-        $time = time();
-        $sign = sha1($this->appSecret.$nonce.$time);
-        $httpHeader = array(
-            'App-Key:'.$this->appKey,
-            'Nonce:'.$nonce,
-            'Timestamp:'.$time,
-            'Signature:'.$sign,
-        );
-
-        //print_r($httpHeader);
-        return $this->curl($url,$params,$httpHeader);
+        return $this->curl($url,$params,$this->httpHeader);
     }
 
     /**
@@ -149,4 +147,5 @@ class AuthService{
     }
 
 }
+
 
